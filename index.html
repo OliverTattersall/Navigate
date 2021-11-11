@@ -36,16 +36,21 @@
         var marker = L.marker([44.552923140196725, -78.15305721293893]).addTo(mymap);
 
         var markers = [marker];
+        var iconval=L.icon({
+            iconUrl:'images/rock.png',
+            iconAnchor: [15,42]
+
+        })
 
         var lat, lng;
         mymap.addEventListener('click', (ev)=>{
             lat = ev.latlng.lat;
             lng = ev.latlng.lng;
-            markers.push(L.marker([lat, lng]).addTo(mymap))
+            markers.push(L.marker([lat, lng], {icon:iconval}).addTo(mymap))
             console.log(lat, lng)
             console.log(markers[0])
-            markers[0]["_icon"].currentSrc = 'images/marker-icon copy.png'
-            console.log(markers[0])
+            // markers[0]["_icon"] = "<img src='images/marker-icon copy.png'>"
+            // console.log(markers[0]["_icon"])
         })
 
     </script>
