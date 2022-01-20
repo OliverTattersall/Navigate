@@ -45,23 +45,23 @@
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">textsms</i>
-                <input type="email" id="em">
+                <input type="email" id="em" class="field">
                 <label for="em">Email</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">textsms</i>
-                <input type="password" id="pass">
+                <input type="password" id="pass" class="field">
                 <label for="pass">Password</label>
               </div>
             </div>
             <div class="row">
               <div class="col s6">
-                <a class="btn">Login</a>
+                <a class="btn" onclick="login()">Login</a>
               </div>
               <div class="col s6">
-                <a class="btn">Sign Up</a>
+                <a class="btn" id="SignUp" onclick = "signUp()">Sign Up</a>
               </div>
             </div>
           </div>
@@ -76,6 +76,13 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-auth.js"></script>
+
+    
     <script src="login.js"></script>
     <script>
 

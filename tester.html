@@ -12,7 +12,7 @@
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-database.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-authentication.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-auth.js"></script>
     <script>
 
         window.localStorage.setItem("banana","k");
@@ -48,20 +48,48 @@
             console.log(data)
         });
 
-
-
-        database.ref('users').push({
-            username: "Oliver",
-            email: "a@gmail.com",
-            profile_picture : ""
-        });
-        
-        suggestion={
-            b:"a",
-            c:"9",
-            d:true
+        function userCreate(user){
+            database.ref('users/'+user).set({
+                username: "Oliver",
+                email: "a@gmail.com",
+                profile_picture : ""
+            })
         }
-        database.ref().push(suggestion);
+
+        firebase.auth().onAuthStateChanged((user) => {
+            console.log("hello")
+            if (user) {
+                console.log("in")
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                var uid = user.uid;
+                userCreate(uid)
+                database.ref('users/'+uid).once('value',(v)=>{
+                    console.log(v.val())
+                } )
+                // ...
+            } else {
+                console.log("no")
+                // User is signed out
+                // ...
+            }
+        });
+
+
+
+        
+        // database.ref('users').push({
+        //     username: "Oliver",
+        //     email: "a@gmail.com",
+        //     profile_picture : ""
+        // });
+        
+        // suggestion={
+        //     b:"a",
+        //     c:"9",
+        //     d:true
+        // }
+        // database.ref().push(suggestion);
 
       </script>
 
