@@ -7,13 +7,49 @@
 </head>
 <body>
 
-    <button onclick="window.open('login.html')">Go</button>
+    <button onclick="select('countries', 'Ireland')">Go</button>
+
+
+    <select id="countries" name="countries">
+        <option value="Argentina">Argentina</option>
+        <option value="Brazil">Brazil</option>
+        <option value="England">England</option>
+        <option value="Ireland">Ireland</option>
+        <option value="United States">United States</option>
+    </select>
         <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-database.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-auth.js"></script>
+
+        <button onclick="getLocation()">Try It</button>
+
+        <p id="demo"></p>
+        
+        <script>
+        var x = document.getElementById("demo");
+        
+        function getLocation() {
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition((e)=>{
+                console.log(e.coords.latitude)
+                console.log(e.coords.longitude)
+              })
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else { 
+            x.innerHTML = "Geolocation is not supported by this browser.";
+          }
+        }
+        
+        function showPosition(position) {
+          x.innerHTML = "Latitude: " + position.coords.latitude + 
+          "<br>Longitude: " + position.coords.longitude;
+        }
+        </script>
     <script>
+
+
 
         window.localStorage.setItem("banana","k");
 
@@ -75,7 +111,23 @@
             }
         });
 
+        function select(selectId, optionValToSelect){
+            //Get the select element by it's unique ID.
+            var selectElement = document.getElementById(selectId);
+            //Get the options.
+            var selectOptions = selectElement.options;
+            //Loop through these options using a for loop.
+            
 
+            for (var opt, j = 0; opt = selectOptions[j]; j++) {
+                //If the option of value is equal to the option we want to select.
+                if (opt.value == optionValToSelect) {
+                    //Select the option and break out of the for loop.
+                    selectElement.selectedIndex = j;
+                    break;
+                }
+            }
+        }
 
         
         // database.ref('users').push({

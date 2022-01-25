@@ -7,6 +7,8 @@ var mymap = L.map('map',{
   zoomControl:true
 }).setView([44.552923140196725, -78.15305721293893], 13);
 mymap.zoomControl.setPosition('topright');
+map.locate({setView: true, watch: true, maxZoom: 17});
+map.once('locationfound', onLocationFound);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -18,6 +20,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1Ijoib2xpdmVydGF0dGVyc2FsbCIsImEiOiJja3ZzZjBpazQzN3FuMnVtdDI4ZnRyZDZtIn0.o-xBUWx2qZyqMiOrwowGdA'
 }).addTo(mymap);
 
+//creates marker onload
 var marker = L.marker([44.552923140196725, -78.15305721293893]).addTo(mymap);
 
 var markers = [marker];
@@ -27,6 +30,8 @@ var iconval=L.icon({
 
 })
 
+
+// onclick for rock placements
 var lat, lng;
 mymap.addEventListener('click', (ev)=>{
     lat = ev.latlng.lat;
@@ -55,6 +60,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var instances = M.Dropdown.init(elems);
 });
 
+//dropdown initialization
+document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('select');
+  var instances = M.FormSelect.init(elems);
+  console.log(elems[0])
+});
+
 
 
 // Firebase Js
@@ -74,6 +86,9 @@ const config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 
+// var lakes = ["Stony Lake", "Lake Muskoka", "Lake of Bays", "Lake Chandos"]
+
+
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
   .then(() => {
@@ -90,6 +105,7 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
     var errorMessage = error.message;
   });
 
+var userData = [];
 firebase.auth().onAuthStateChanged((user) => {
   console.log("hello")
   if (user) {
@@ -100,8 +116,9 @@ firebase.auth().onAuthStateChanged((user) => {
       var uid = user.uid;
       database.ref('users/'+uid).once('value',(v)=>{
         d = v.val()
-        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location']]
-        updateInfo(vals)
+        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
+        userData = vals;
+        loadInfo(vals)
       } )
       
       
@@ -110,8 +127,8 @@ firebase.auth().onAuthStateChanged((user) => {
       console.log("no")
       database.ref('users/test').once('value',(v)=>{
         d = v.val()
-        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location']]
-        updateInfo(vals)
+        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
+        loadInfo(vals)
       } )
       // User is signed out
       // ...
@@ -119,8 +136,8 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 
-function updateInfo(data){
-
+function loadInfo(data){
+  console.log(data)
   userInfo = document.getElementsByClassName("info")
 
   
@@ -137,7 +154,22 @@ function updateInfo(data){
   }else{
     userInfo[3].innerHTML +=" Active"
   }
-  
+
+  //update lake 
+  // document.getElementById('lakes').selectedIndex=1;
+  var selectElement = document.getElementById('lakes')
+  var selectOptions = selectElement.options
+
+
+  console.log(lakes.length)
+  for(i=0;i<selectOptions.length;i++){
+    if(selectOptions[i].value ==data[4]){
+      document.getElementById('lakes').selectedIndex = i;
+
+      M.FormSelect.init(lakes)
+
+    }
+  }
 
 }
 

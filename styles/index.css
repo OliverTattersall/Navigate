@@ -1,0 +1,18 @@
+.icon{
+    font-size: 36px;
+    margin-top: 100%;
+}#map{
+    height:600px; width:80%;
+    margin-left: 10%;
+    margin-top: 0%;
+}.side{
+    position: absolute;
+    top:45%;
+    height:15%;
+
+    background-color: #1c45a6;
+}.sub{
+    margin-left: 5%;
+}.lakes{
+    margin-top: 5%;
+}

@@ -11,23 +11,9 @@
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin=""/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+       <link rel="stylesheet" href="styles/index.css">
         <style>
-            .icon{
-                font-size: 36px;
-                margin-top: 100%;
-            }#map{
-                height:600px; width:80%;
-                margin-left: 10%;
-                margin-top: 2%;
-            }.side{
-                position: absolute;
-                top:45%;
-                height:15%;
-
-                background-color: #1c45a6;
-            }.sub{
-                margin-left: 5%;
-            }
+            
         
           </style>
     </head>
@@ -66,8 +52,22 @@
 
         <a href="#" data-target="slide-out" class="sidenav-trigger side"><i class="material-icons icon">arrow_forward</i></a>
 
-
-        <div id="map"></div>
+        <div class="row">
+            <div class="input-field col s12 l6 m8 offset-l3 offset-m2 lakes">
+                <select id='lakes' name='lakes'>
+                    <option value="" >Choose your Lake</option>
+                    <option value="Stony Lake">Stony Lake</option>
+                    <option value="Lake Muskoka">Lake Muskoka</option>
+                    <option value="Lake of Bays">Lake of Bays</option>
+                    <option value="Lake Chandos">Lake Chandos</option>
+                </select>
+                <label>Materialize Select</label>
+            </div>
+        </div>
+        <div class="row">
+            <div id="map"></div>
+        </div>
+        
 
 
         <!-- <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script> -->
@@ -79,7 +79,10 @@
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="index.js"></script>
+        <!-- <script src="scripts/index.js"></script> -->
+        <script src="scripts/indexFirebase.js"></script>
+        <script src="scripts/indexMaterialize.js"></script>
+        <script src="scripts/leaflet.js"></script>
 
 
     </body>
