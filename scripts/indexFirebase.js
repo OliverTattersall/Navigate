@@ -49,6 +49,7 @@ const config = {
           vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
           userData = vals;
           loadInfo(vals)
+          updateMap()
         } )
         
         
@@ -59,7 +60,11 @@ const config = {
           d = v.val()
           vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
           loadInfo(vals)
+          userData = vals;
+          updateMap()
         } )
+        // user is not signed in redirect them to login page
+        // window.open("login.html", "_parent")
         // User is signed out
         // ...
     }
@@ -67,7 +72,7 @@ const config = {
   
   
   function loadInfo(data){
-    console.log(data)
+    // console.log(data)
     userInfo = document.getElementsByClassName("info")
   
     

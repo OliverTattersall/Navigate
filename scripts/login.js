@@ -67,7 +67,7 @@ function login(){
         .then((userCredential) => {
             console.log("logged in")
             var user = userCredential.user;
-            window.open("tester.html", "_parent")
+            window.open("index.html", "_parent")
             // ...
         })
         .catch((error) => {

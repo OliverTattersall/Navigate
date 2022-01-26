@@ -30,11 +30,11 @@
     
           </nav>
         
-
+        <!-- side nav -->
         <ul id="slide-out" class="sidenav">
 
                 
-            <!-- <a href="#user"><img class="circle" src="images/yuna.jpg"></a> -->
+
             <li><a class="subheader">User Info</a></li>
             <li><a href="#name"><span class="black-text name sub info">Username:</span></a></li>
             <li><a href="#email"><span class="black-text email sub info">email:</span></a></li>
@@ -42,16 +42,17 @@
             <li><a href="#email"><span class="black-text email sub info">Location:</span></a></li>
             <li><div class="divider"></div></li>
 
-            <li><a href="#!">Friends</a></li>
-            <li><a href="#!">Favourite Places</a></li>
+            <li><a class='modal-trigger' href="#friendsModal">Friends</a></li>
+            <li><a class='modal-trigger' href="#favLocsModal">Favourite Places</a></li>
             <li><div class="divider"></div></li>
 
-            <li><a class="waves-effect" href="#!">Add Rock</a></li>
-            <li><a class="waves-effect" href="#!">Add Danger Zone</a></li>
+            <li><a class="waves-effect" href="#!" onclick="rock=true;closeSideOnModal()">Add Rock</a></li>
+            <li><a class="waves-effect" href="#!" onclick="poly=true;closeSideOnModal(); points=[];">Add Danger Zone</a></li>
         </ul> 
 
         <a href="#" data-target="slide-out" class="sidenav-trigger side"><i class="material-icons icon">arrow_forward</i></a>
 
+<!-- main content -->
         <div class="row">
             <div class="input-field col s12 l6 m8 offset-l3 offset-m2 lakes">
                 <select id='lakes' name='lakes'>
@@ -68,6 +69,28 @@
             <div id="map"></div>
         </div>
         
+        <!-- modals -->
+        <div id="friendsModal" class="mdls modal modal-fixed-footer col l3 m1 s1">
+            <div class="modal-content">
+                
+              <h4>Friends</h4>
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+              <p>A bunch of text</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            </div>
+        </div>
+
+        <div id="favLocsModal" class="mdls modal modal-fixed-footer" col l6 m1 s1">
+            <div class="modal-content">
+              <h4>Favourite Locations</h4>
+              <p>A bunch of text</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            </div>
+        </div>
 
 
         <!-- <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script> -->
