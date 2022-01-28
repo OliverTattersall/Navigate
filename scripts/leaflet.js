@@ -21,6 +21,15 @@ function updateMap(){
     }
 }
 
+function getLoc(){
+    console.log("hello")
+    if(userData[3]){
+        navigator.geolocation.getCurrentPosition((e)=>{
+            mymap.setView([e.coords.latitude, e.coords.longitude], 12)
+        })
+    }
+}
+
 
 mymap.zoomControl.setPosition('topright');
 

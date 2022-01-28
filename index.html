@@ -62,12 +62,21 @@
                     <option value="Lake of Bays">Lake of Bays</option>
                     <option value="Lake Chandos">Lake Chandos</option>
                 </select>
-                <label>Materialize Select</label>
+                <label>Select which lake will be looked at</label>
             </div>
         </div>
         <div class="row">
-            <div id="map"></div>
+            <div id="map">
+              <div class="leaflet-top leaflet-right" style="margin-top: 7%; margin-right: 1%;">
+                <button style="background: url(images/location.jpg); width:27px; height:28px" onclick="getLoc()"></button>
+                <!-- <a class="waves-effect waves-light btn"><i class="material-icons right">Room</i></a> -->
+              </div>
+            </div>
+            <button style="background: url(images/location.jpg); width:27px; height:28px" onclick="getLoc()"></button>
         </div>
+
+
+        
         
         <!-- modals -->
         <div id="friendsModal" class="mdls modal modal-fixed-footer col l3 m1 s1">
