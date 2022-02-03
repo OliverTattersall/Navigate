@@ -85,12 +85,13 @@ function signUp(){
     password = document.getElementsByClassName("field")[1].value
     // console.log(emailValid(email))
     if(emailValid(email)){
-        if(passoword.length>=6){
+        if(password.length>=6){
             console.log("in")
-            firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
+            firebase.auth().createUserWithEmailAndPassword(email, password).then((user) => {
                     // Signed in 
-                    console.log("hello")
-                    var user = userCredential.user;
+                    console.log(user)
+                    
+                    console.log(user.user.email)
                     // ...
                 }).catch((error) => {
                     var errorCode = error.code;

@@ -54,7 +54,7 @@
 
 <!-- main content -->
         <div class="row">
-            <div class="input-field col s12 l6 m8 offset-l3 offset-m2 lakes">
+            <div class="input-field col s10 l6 m8 offset-l3 offset-m2 lakes">
                 <select id='lakes' name='lakes'>
                     <option value="" >Choose your Lake</option>
                     <option value="Stony Lake">Stony Lake</option>
@@ -64,13 +64,13 @@
                 </select>
                 <label>Select which lake will be looked at</label>
             </div>
+            <div class = "col l1 s1 m1" style="margin-top: 3%;">
+              <a class="waves-effect waves-light btn" onclick="logOut()">Logout</a>
+            </div>
         </div>
         <div class="row">
             <div id="map">
-              <div class="leaflet-top leaflet-right" style="margin-top: 7%; margin-right: 1%;">
-                <button style="background: url(images/location.jpg); width:27px; height:28px" onclick="getLoc()"></button>
-                <!-- <a class="waves-effect waves-light btn"><i class="material-icons right">Room</i></a> -->
-              </div>
+
             </div>
             <button style="background: url(images/location.jpg); width:27px; height:28px" onclick="getLoc()"></button>
         </div>
@@ -83,21 +83,22 @@
             <div class="modal-content">
                 
               <h4>Friends</h4>
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-              <p>A bunch of text</p>
+              <a href="#!" class="waves-effect waves-green teal lighten-4 black-text modalList" id="addFriend">Add a friend</a>
+
             </div>
             <div class="modal-footer">
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
 
-        <div id="favLocsModal" class="mdls modal modal-fixed-footer" col l6 m1 s1">
+        <div id="favLocsModal" class="mdls modal modal-fixed-footer col l6 m1 s1">
             <div class="modal-content">
               <h4>Favourite Locations</h4>
-              <p>A bunch of text</p>
+              <a href="#!" class="waves-effect waves-green teal lighten-4 black-text modalList" id="addLoc">Add a favourite locations</a>
+              
             </div>
             <div class="modal-footer">
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
 

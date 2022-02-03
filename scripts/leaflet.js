@@ -1,8 +1,11 @@
 
 var rock=false;
 var poly=false;
+var star=false;
 var rocks=[];
 var polygons=[];
+var stars = [];
+
 
 var mymap = L.map('map',{zoomControl:true})
 mymap.setView([44.552923140196725, -78.15305721293893], 13);
@@ -51,10 +54,14 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 
 
-var iconval=L.icon({
+var rockIcon=L.icon({
     iconUrl:'images/rock.png',
     iconAnchor: [15,42]
 
+})
+var starIcon = L.icon({
+    iconUrl:'images/star.png',
+    iconAnchor: [15,42]
 })
 
 
@@ -67,7 +74,7 @@ mymap.addEventListener('click', (ev)=>{
     lng = ev.latlng.lng;
 
     //gets a popup info
-    if(!poly&&!rock&&rocks.length!=0){
+    if(!poly&&!rock&&rocks.length!=0 && !star){
         zoom = mymap._zoom-12
 
         d = 0.005
@@ -88,20 +95,19 @@ mymap.addEventListener('click', (ev)=>{
         }
         // console.log(d)
         
-
-
     }
+
     // adds a rock
     if(rock){
         description = prompt("Add description to rock if need(can leave blank)")
         // console.log(description)
         if(description!=null){
-            rocks.push(L.marker([lat, lng], {icon:iconval}).addTo(mymap))
+            rocks.push(L.marker([lat, lng], {icon:rockIcon}).addTo(mymap))
             if(description!=""){
                 rocks[rocks.length-1].bindPopup(description)
             }
             let lake = document.getElementById("lakes").value
-            temppath = "lakes/"+lake+"/Rocks"
+            let temppath = "lakes/"+lake+"/Rocks"
             // console.log(temppath)
             var info = [lat, lng, description]
             addToDatabase(temppath, info)
@@ -118,6 +124,20 @@ mymap.addEventListener('click', (ev)=>{
     }else if(poly){
         points.push([lat, lng])
         
+    }else if(star){
+        description = prompt("Add description to rock if need(can leave blank)")
+        
+        if(description!=null){
+            stars.push(L.marker(data[keys[i]], {icon:starIcon}).addTo(mymap))
+            if(description!=""){
+                stars[stars.length-1].bindPopup(description)
+            }
+          
+            let temppath = "users/"+uid+"/FavLocs"
+            // console.log(temppath)
+            var info = [lat, lng, description]
+            addToDatabase(temppath, info)
+        }
     }
 
     // rocks[0]["_icon"] = "<img src='images/marker-icon copy.png'>"
@@ -127,14 +147,25 @@ mymap.addEventListener('click', (ev)=>{
 document.addEventListener('keyup', (ev)=>{
     if(poly){
         if(ev.code=='Space'){
-            console.log('hello')
-            poly=false
-            descrip = prompt("Add description to DangerZone for more information if needed(can leave blank):")
-            
-            polygons.push(L.polygon(points, {color: 'red'}).addTo(mymap));
-            if(descrip!==""){
-                polygons[polygons.length-1].bindPopup(descrip)
+            // console.log('hello')
+            if(points.length>=3){
+                let lake = document.getElementById("lakes").value
+                poly=false
+                descrip = prompt("Add description to DangerZone for more information if needed(can leave blank):")
+
+                polygons.push(L.polygon(points, {color: 'red'}).addTo(mymap));
+                if(descrip!==""){
+                    polygons[polygons.length-1].bindPopup(descrip)
+                    points.push(descrip)
+                }else{
+                    points.push("")
+                }
+                let temppath = "lakes/"+lake+"/DangerZones/"
+                addToDatabase(temppath, points)
+            }else{
+                poly = false
             }
+            
         }
     }
 
@@ -142,20 +173,43 @@ document.addEventListener('keyup', (ev)=>{
 })
 
 
-//load rocks and danger zones
+//load rocks and danger zones and favourite locations
 function loadRocks(){
-    x = getFromDatabase("/lakes/Stony Lake/Rocks/")
+    let lake = document.getElementById("lakes").value
+    // console.log(dropDown)
+    // let lake = document.getElementById("lakes").value
+    // console.log(dropDown)
+    x = getFromDatabase("/lakes/"+lake+"/")
     // console.log(x)
     x.then((e)=>{
         console.log(e)
-        keys = Object.keys(e)
+        keys1 = Object.keys(e["Rocks"])
+        keys2 = Object.keys(e["DangerZones"])
+
         
-        console.log(e[keys])
-        for(i=0; i<keys.length; i++){
-            rocks.push(L.marker([e[keys[i]][0], e[keys[i]][1]], {icon:iconval}).addTo(mymap))
+        // console.log(e[keys])
+        for(i=0; i<keys1.length; i++){
+            rocks.push(L.marker([e["Rocks"][keys1[i]][0], e["Rocks"][keys1[i]][1]], {icon:rockIcon}).addTo(mymap))
+        }
+        // console.log(e["DangerZones"][keys2[0]])
+        for(i=0;i<keys2.length;i++){
+            var temp = e["DangerZones"][keys2[i]]
+            polygons.push(L.polygon(temp.slice(0,temp.length-1), {color: 'red'}).addTo(mymap))
+            // console.log(temp[temp.length-1])
+            if(temp[temp.length-1]!=""){
+                polygons[polygons.length-1].bindPopup(temp[temp.length-1][0])
+            }
+            
         }
     })
-    // console.log(x['PromiseResult'])
 }
 
-
+function loadStars(data){
+    if(data==null){
+        return 
+    }
+    let keys = Object.keys(data)
+    for(i=0;i<keys.length;i++){
+        stars.push(L.marker(data[keys[i]], {icon:starIcon}).addTo(mymap))
+    }
+}

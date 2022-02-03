@@ -42,7 +42,7 @@ firebase.auth().onAuthStateChanged((user) => {
       console.log("in")
       console.log(user.uid)
       // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
+
       var uid = user.uid;
       database.ref('users/'+uid).once('value',(v)=>{
         d = v.val()
@@ -50,22 +50,27 @@ firebase.auth().onAuthStateChanged((user) => {
         userData = vals;
         loadInfo(vals)
         updateMap()
+        loadRocks()
       } )
 
-      loadRocks()
+      
       
       
       // ...
   } else {
+    var uid = 'test'
       console.log("no")
       database.ref('users/test').once('value',(v)=>{
         d = v.val()
+
         vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
         loadInfo(vals)
         userData = vals;
         updateMap()
+        loadRocks()
+        loadStars(d["FavLocs"])
       } )
-      loadRocks()
+      
       // user is not signed in redirect them to login page
       // window.open("login.html", "_parent")
       // User is signed out
@@ -129,10 +134,19 @@ function addToDatabase(path, data){
 function getFromDatabase(path){
   var temp = []
   return database.ref(path).once('value').then((e)=>{
-    console.log(e.val())
+    // console.log(e.val())
     return e.val()
   }).catch((error) => {
     console.error(error);
   });
 
+}
+
+function logOut(){
+  console.log("hello")
+  firebase.auth().signOut().then(() => {
+    // Sign-out successful.
+  }).catch((error) => {
+    // An error happened.
+  });
 }
