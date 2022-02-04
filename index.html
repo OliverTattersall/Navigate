@@ -43,7 +43,7 @@
             <li><div class="divider"></div></li>
 
             <li><a class='modal-trigger' href="#friendsModal">Friends</a></li>
-            <li><a class='modal-trigger' href="#favLocsModal">Favourite Places</a></li>
+            <li><a class='modal-trigger' href="#favLocsModal" onclick="loadModalContent('LocContent', stars)">Favourite Places</a></li>
             <li><div class="divider"></div></li>
 
             <li><a class="waves-effect" href="#!" onclick="rock=true;closeSideOnModal()">Add Rock</a></li>
@@ -93,8 +93,10 @@
 
         <div id="favLocsModal" class="mdls modal modal-fixed-footer col l6 m1 s1">
             <div class="modal-content">
-              <h4>Favourite Locations</h4>
-              <a href="#!" class="waves-effect waves-green teal lighten-4 black-text modalList" id="addLoc">Add a favourite locations</a>
+              <div id="LocContent">
+                <h4>Favourite Locations</h4>
+              <a class="waves-effect modal-close waves-green teal lighten-4 black-text modalList" id="addLoc" onclick="star=true;">Add a favourite locations</a>
+              </div>
               
             </div>
             <div class="modal-footer">

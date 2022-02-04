@@ -18,6 +18,8 @@
 } .modalList{
     width: 100%; 
     height:10%;
+    border: 1px solid #1c45a6;
+    text-indent: 10px
 }
 /* .mdls{
     width:10%;

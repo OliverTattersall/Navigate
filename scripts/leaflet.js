@@ -13,8 +13,8 @@ mymap.setView([44.552923140196725, -78.15305721293893], 13);
 
 // updates map to their location if allowed
 function updateMap(){
-    // console.log(userData)
-    if(userData[3]){
+
+    if(userData['Location']){
         navigator.geolocation.getCurrentPosition((e)=>{
             mymap.setView([e.coords.latitude, e.coords.longitude], 13)
         }) 
@@ -26,7 +26,7 @@ function updateMap(){
 
 function getLoc(){
     console.log("hello")
-    if(userData[3]){
+    if(userData['Location']){
         navigator.geolocation.getCurrentPosition((e)=>{
             mymap.setView([e.coords.latitude, e.coords.longitude], 12)
         })
@@ -69,6 +69,7 @@ var starIcon = L.icon({
 var lat, lng;
 points = []
 mymap.addEventListener('click', (ev)=>{
+    console.log(star)
     // console.log(mymap.zoom)
     lat = ev.latlng.lat;
     lng = ev.latlng.lng;
@@ -125,19 +126,27 @@ mymap.addEventListener('click', (ev)=>{
         points.push([lat, lng])
         
     }else if(star){
-        description = prompt("Add description to rock if need(can leave blank)")
+        description = prompt("Add description to new location(cannot leave blank)")
         
-        if(description!=null){
-            stars.push(L.marker(data[keys[i]], {icon:starIcon}).addTo(mymap))
-            if(description!=""){
-                stars[stars.length-1].bindPopup(description)
+
+
+            while(description=="" && description!=null){
+                description= prompt("Add description to new location(cannot leave blank)")
             }
-          
-            let temppath = "users/"+uid+"/FavLocs"
-            // console.log(temppath)
-            var info = [lat, lng, description]
-            addToDatabase(temppath, info)
-        }
+            if(description!=null){
+                stars.push(L.marker([lat, lng], {icon:starIcon}).addTo(mymap))
+
+                stars[stars.length-1].bindPopup(description)
+
+                
+                let temppath = "users/"+uid+"/FavLocs"
+                // console.log(temppath)
+                var info = [lat, lng, description]
+                addToDatabase(temppath, info)
+                
+            }
+            
+        star = false;
     }
 
     // rocks[0]["_icon"] = "<img src='images/marker-icon copy.png'>"
@@ -208,8 +217,10 @@ function loadStars(data){
     if(data==null){
         return 
     }
+    console.log(data)
     let keys = Object.keys(data)
     for(i=0;i<keys.length;i++){
-        stars.push(L.marker(data[keys[i]], {icon:starIcon}).addTo(mymap))
+        console.log(data[keys[i]])
+        stars.push(L.marker(data[keys[i]].slice(0,2), {icon:starIcon}).addTo(mymap).bindPopup(data[keys[i]][2]))
     }
 }

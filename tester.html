@@ -74,6 +74,11 @@
       
         // Initialize Firebase
         firebase.initializeApp(config);
+        x = prompt("hello")
+        while(x=="" || x!=null){
+            // console.log("hello")
+            x = prompt("hello")
+        }
         // firebase.analytics();
         // const analytics = getAnalytics(app);
         const database = firebase.database();
@@ -84,32 +89,32 @@
             console.log(data)
         });
 
-        function userCreate(user){
-            database.ref('users/'+user).set({
-                username: "Oliver",
-                email: "a@gmail.com",
-                profile_picture : ""
-            })
-        }
+        // function userCreate(user){
+        //     database.ref('users/'+user).set({
+        //         username: "Oliver",
+        //         email: "a@gmail.com",
+        //         profile_picture : ""
+        //     })
+        // }
 
-        firebase.auth().onAuthStateChanged((user) => {
-            console.log("hello")
-            if (user) {
-                console.log("in")
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
-                var uid = user.uid;
-                userCreate(uid)
-                database.ref('users/'+uid).once('value',(v)=>{
-                    console.log(v.val())
-                } )
-                // ...
-            } else {
-                console.log("no")
-                // User is signed out
-                // ...
-            }
-        });
+        // firebase.auth().onAuthStateChanged((user) => {
+        //     console.log("hello")
+        //     if (user) {
+        //         console.log("in")
+        //         // User is signed in, see docs for a list of available properties
+        //         // https://firebase.google.com/docs/reference/js/firebase.User
+        //         var uid = user.uid;
+        //         userCreate(uid)
+        //         database.ref('users/'+uid).once('value',(v)=>{
+        //             console.log(v.val())
+        //         } )
+        //         // ...
+        //     } else {
+        //         console.log("no")
+        //         // User is signed out
+        //         // ...
+        //     }
+        // });
 
         function select(selectId, optionValToSelect){
             //Get the select element by it's unique ID.

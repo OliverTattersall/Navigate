@@ -1,6 +1,6 @@
 
 // Firebase Js
-
+var uid;
 const config = {
   apiKey: "AIzaSyCx3XEp_L0OViWBsb4uSCi76hAkiiBmnTU",
   authDomain: "navigate-5ba1a.firebaseapp.com",
@@ -36,6 +36,7 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
   });
 
 var userData = [];
+var test = [];
 firebase.auth().onAuthStateChanged((user) => {
   console.log("hello")
   if (user) {
@@ -43,14 +44,16 @@ firebase.auth().onAuthStateChanged((user) => {
       console.log(user.uid)
       // User is signed in, see docs for a list of available properties
 
-      var uid = user.uid;
+      uid = user.uid;
       database.ref('users/'+uid).once('value',(v)=>{
         d = v.val()
         vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
-        userData = vals;
+        userData = d;
+
         loadInfo(vals)
         updateMap()
         loadRocks()
+        loadStars(d["FavLocs"])
       } )
 
       
@@ -58,17 +61,18 @@ firebase.auth().onAuthStateChanged((user) => {
       
       // ...
   } else {
-    var uid = 'test'
+      uid = 'test'
       console.log("no")
       database.ref('users/test').once('value',(v)=>{
-        d = v.val()
-
-        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
-        loadInfo(vals)
-        userData = vals;
-        updateMap()
-        loadRocks()
-        loadStars(d["FavLocs"])
+          d = v.val()
+          
+          vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
+          loadInfo(vals)
+          userData = d;
+          updateMap()
+          loadRocks()
+          loadStars(d["FavLocs"])
+          
       } )
       
       // user is not signed in redirect them to login page
