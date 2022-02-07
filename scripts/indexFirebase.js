@@ -52,7 +52,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
         loadInfo(vals)
         updateMap()
-        loadRocks()
+
         loadStars(d["FavLocs"])
       } )
 
@@ -70,7 +70,7 @@ firebase.auth().onAuthStateChanged((user) => {
           loadInfo(vals)
           userData = d;
           updateMap()
-          loadRocks()
+          
           loadStars(d["FavLocs"])
           
       } )
@@ -118,6 +118,8 @@ function loadInfo(data){
 
     }
   }
+  // loadRocks()
+  changeMapView()
 
 }
 
@@ -146,6 +148,11 @@ function getFromDatabase(path){
 
 }
 
+function deleteFromDatabase(path){
+  firebase.database().ref(path).remove()
+}
+
+
 function logOut(){
   console.log("hello")
   firebase.auth().signOut().then(() => {
@@ -153,4 +160,12 @@ function logOut(){
   }).catch((error) => {
     // An error happened.
   });
+}
+
+
+var sidenavInfo;
+
+function editInfo(){
+  sidenavInfo = document.getElementById('userInfo');
+  
 }

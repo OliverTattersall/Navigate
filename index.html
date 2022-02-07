@@ -34,12 +34,14 @@
         <ul id="slide-out" class="sidenav">
 
                 
+            <div id="userInfo">
+              <li><a class="subheader" style="width:50%; margin-right: 0%;">User Info</a><button>Edit</button></li>
+              <li><a href="#name"><span class="black-text name sub info">Username:</span></a></li>
+              <li><a href="#email"><span class="black-text email sub info">email:</span></a></li>
+              <li><a href="#email"><span id="home" class="black-text email sub info">Home location:</span></a></li>
+              <li><a href="#email"><span id="loc" class="black-text email sub info">Location:</span></a></li>
+            </div>
 
-            <li><a class="subheader">User Info</a></li>
-            <li><a href="#name"><span class="black-text name sub info">Username:</span></a></li>
-            <li><a href="#email"><span class="black-text email sub info">email:</span></a></li>
-            <li><a href="#email"><span class="black-text email sub info">Home location:</span></a></li>
-            <li><a href="#email"><span class="black-text email sub info">Location:</span></a></li>
             <li><div class="divider"></div></li>
 
             <li><a class='modal-trigger' href="#friendsModal">Friends</a></li>
@@ -55,11 +57,9 @@
 <!-- main content -->
         <div class="row">
             <div class="input-field col s10 l6 m8 offset-l3 offset-m2 lakes">
-                <select id='lakes' name='lakes'>
+                <select id='lakes' name='lakes' onchange="changeMapView()">
                     <option value="" >Choose your Lake</option>
                     <option value="Stony Lake">Stony Lake</option>
-                    <option value="Lake Muskoka">Lake Muskoka</option>
-                    <option value="Lake of Bays">Lake of Bays</option>
                     <option value="Lake Chandos">Lake Chandos</option>
                 </select>
                 <label>Select which lake will be looked at</label>
@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="row">
-            <div id="map">
+            <div id="map" class="col l8">
 
             </div>
             <button style="background: url(images/location.jpg); width:27px; height:28px" onclick="getLoc()"></button>

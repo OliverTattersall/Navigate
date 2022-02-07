@@ -154,6 +154,7 @@ mymap.addEventListener('click', (ev)=>{
 })
 
 document.addEventListener('keyup', (ev)=>{
+    
     if(poly){
         if(ev.code=='Space'){
             // console.log('hello')
@@ -176,6 +177,23 @@ document.addEventListener('keyup', (ev)=>{
             }
             
         }
+    }if(ev.code=="Backspace"){
+        for(i=0;i<rocks.length;i++){
+            
+            if(rocks[i]._popup!=null){
+                if(rocks[i]._popup.isOpen()){
+                    x = confirm("Are you sure you want to delete the rock")
+                    console.log(x)
+                    let lake = document.getElementById('lakes').value
+                    if(x){
+                        rocks[i].remove()
+                        console.log(rocks[i].key)
+                        deleteFromDatabase('lakes/'+lake+'/Rocks/'+rocks[i].key)
+                    }
+                }
+            }
+            
+        }
     }
 
 
@@ -192,13 +210,24 @@ function loadRocks(){
     // console.log(x)
     x.then((e)=>{
         console.log(e)
-        keys1 = Object.keys(e["Rocks"])
-        keys2 = Object.keys(e["DangerZones"])
+        keys1 = []
+        keys2 = []
+        if(e['Rocks']!=null){
+            keys1 = Object.keys(e["Rocks"])
+        }
+        if(e['DangerZones']!=null){
+            keys2 = Object.keys(e["DangerZones"])
+        }
+        
 
         
         // console.log(e[keys])
         for(i=0; i<keys1.length; i++){
             rocks.push(L.marker([e["Rocks"][keys1[i]][0], e["Rocks"][keys1[i]][1]], {icon:rockIcon}).addTo(mymap))
+            if(e["Rocks"][keys1[i]][2]!=""){
+                rocks[i].bindPopup(e["Rocks"][keys1[i]][2])
+            }
+            rocks[i].key=keys1[i];
         }
         // console.log(e["DangerZones"][keys2[0]])
         for(i=0;i<keys2.length;i++){
@@ -224,3 +253,21 @@ function loadStars(data){
         stars.push(L.marker(data[keys[i]].slice(0,2), {icon:starIcon}).addTo(mymap).bindPopup(data[keys[i]][2]))
     }
 }
+
+
+
+function changeMapView(){
+    let selectVal = document.getElementById('lakes').value;
+    console.log(selectVal)
+    let tempData = getFromDatabase("lakes/"+selectVal+"/Bounds/")
+    tempData.then((val)=>{
+        console.log(val)
+        let x = (val[0][0]+val[1][0])/2
+        let y = (val[0][1]+val[1][1])/2
+        mymap.setView([x, y], 12);
+    })
+    rocks = []
+    loadRocks()
+}
+
+
