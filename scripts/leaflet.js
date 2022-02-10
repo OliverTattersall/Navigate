@@ -255,19 +255,22 @@ function loadStars(data){
 }
 
 
-
+//updates map to different lakes
 function changeMapView(){
     let selectVal = document.getElementById('lakes').value;
-    console.log(selectVal)
-    let tempData = getFromDatabase("lakes/"+selectVal+"/Bounds/")
-    tempData.then((val)=>{
-        console.log(val)
-        let x = (val[0][0]+val[1][0])/2
-        let y = (val[0][1]+val[1][1])/2
-        mymap.setView([x, y], 12);
-    })
-    rocks = []
-    loadRocks()
+    if(selectVal!=''){
+        console.log(selectVal)
+        let tempData = getFromDatabase("lakes/"+selectVal+"/Bounds/")
+        tempData.then((val)=>{
+            console.log(val)
+            let x = (val[0][0]+val[1][0])/2
+            let y = (val[0][1]+val[1][1])/2
+            mymap.setView([x, y], 12);
+        })
+        rocks = []
+        loadRocks()
+    }
+    
 }
 
 

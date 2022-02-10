@@ -92,6 +92,7 @@ function signUp(){
                     console.log(user)
                     
                     console.log(user.user.email)
+                    window.open("profile.html", "_parent")
                     // ...
                 }).catch((error) => {
                     var errorCode = error.code;

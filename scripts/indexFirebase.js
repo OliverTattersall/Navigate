@@ -165,7 +165,53 @@ function logOut(){
 
 var sidenavInfo;
 
+Array.prototype.insert = function ( index, item ) {
+  this.splice( index, 0, item );
+};  
+
+
+
 function editInfo(){
+
   sidenavInfo = document.getElementById('userInfo');
-  
+  let og=sidenavInfo.innerHTML;
+  // console.log(sidenavInfo.innerHTML)
+
+  console.log(userData)
+  let temp = '<li><a class="subheader" style="width:50%; margin-right: 0%;">User Info</a><button onclick="editInfo()">Edit</button></li>, \
+  <li><a href="#name"><span class="black-text name sub info">Username: </span></a></li>, \
+  <li><a href="#email"><span class="black-text email sub info">email: test@test.com</span></a></li>, \
+  <li><a href="#email"><span id="home" class="black-text email sub info">Home location: </span></a></li>, \
+  <li><a href="#email"><span id="loc" class="black-text email sub info">Location: </span></a></li>'.split(",")
+  console.log(temp)
+  let inp = '<div class="input-field col s5 offset-s1">\
+  <input value="'+userData['UserName']+'" id="first_name" type="text" class="validate">\
+  </div>' 
+  let rad='  <div class="switch" id="homeLoc"><label>\
+    Off\
+    <input type="checkbox">\
+    <span class="lever"></span>\
+    On\
+  </label></div>'
+
+  let rad2 = '  <div class="switch" id="getLoc"><label>\
+  Off\
+  <input type="checkbox">\
+  <span class="lever"></span>\
+  On\
+</label></div>'
+  temp.insert(2, inp)
+  temp.insert(5,rad)
+  temp.insert(7, rad)
+  let end=""
+  for(i=0;i<temp.length;i++){
+    end+=temp[i]
+  }
+  sidenavInfo.innerHTML=end;
+
+  document.getElementById('homeLoc').checked = userData['HomeLocation']
+  document.getElementById('getLoc').checked = userData['Location']
 }
+
+
+
