@@ -65,7 +65,7 @@ firebase.auth().onAuthStateChanged((user) => {
       console.log("no")
       database.ref('users/test').once('value',(v)=>{
           d = v.val()
-          
+          console.log(d)
           vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
           loadInfo(vals)
           userData = d;
@@ -169,49 +169,115 @@ Array.prototype.insert = function ( index, item ) {
   this.splice( index, 0, item );
 };  
 
+String.prototype.format = String.prototype.format || function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+        var t = typeof arguments[0];
+        var key;
+        var args = ("string" === t || "number" === t) ?
+            Array.prototype.slice.call(arguments)
+            : arguments[0];
+
+        for (key in args) {
+            str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+        }
+    }
+
+    return str;
+};
+
+var og;
 
 
 function editInfo(){
 
   sidenavInfo = document.getElementById('userInfo');
-  let og=sidenavInfo.innerHTML;
+  og=sidenavInfo.innerHTML;
   // console.log(sidenavInfo.innerHTML)
 
-  console.log(userData)
+  // console.log(userData)
   let temp = '<li><a class="subheader" style="width:50%; margin-right: 0%;">User Info</a><button onclick="editInfo()">Edit</button></li>, \
-  <li><a href="#name"><span class="black-text name sub info">Username: </span></a></li>, \
-  <li><a href="#email"><span class="black-text email sub info">email: test@test.com</span></a></li>, \
-  <li><a href="#email"><span id="home" class="black-text email sub info">Home location: </span></a></li>, \
-  <li><a href="#email"><span id="loc" class="black-text email sub info">Location: </span></a></li>'.split(",")
-  console.log(temp)
-  let inp = '<div class="input-field col s5 offset-s1">\
-  <input value="'+userData['UserName']+'" id="first_name" type="text" class="validate">\
+  <li><p href="#name"><span class="black-text name sub info">Username: </span></p></li>, \
+  <li><p href="#email"><span class="black-text email sub info">email: test@test.com</span></p></li>, \
+  <li><p href="#email"><span id="home" class="black-text email sub info">Home location: </span></p></li>, \
+  <li><p href="#email"><span id="loc" class="black-text email sub info">Location: </span></p></li>'.split(",")
+  // console.log(temp)
+  let inp = '<div class="input-field col s5 offset-s1  change">\
+  <input value="'+userData['UserName']+'" id="edits" type="text" class="validate">\
   </div>' 
-  let rad='  <div class="switch" id="homeLoc"><label>\
+  let rad='  <div class="switch  change" id="homeLoc"><label>\
     Off\
-    <input type="checkbox">\
+    <input type="checkbox" class="switches" id = "homeLoc2">\
     <span class="lever"></span>\
     On\
   </label></div>'
+  console.log(rad)
 
-  let rad2 = '  <div class="switch" id="getLoc"><label>\
+  let rad2 = '  <div class="switch change" id="getLoc"><label>\
   Off\
-  <input type="checkbox">\
+  <input type="checkbox" class="switches" id="getLoc2">\
   <span class="lever"></span>\
   On\
 </label></div>'
   temp.insert(2, inp)
   temp.insert(5,rad)
-  temp.insert(7, rad)
+  temp.insert(7, rad2)
+  temp.insert(9, '<div class="change"><a class="waves-effect waves-light btn sidebtn" onclick="saveSideNav()">Save</a><a class="waves-effect waves-light btn sidebtn" onclick="cancelChanges()">Cancel</a></div>')
   let end=""
   for(i=0;i<temp.length;i++){
     end+=temp[i]
   }
   sidenavInfo.innerHTML=end;
-
-  document.getElementById('homeLoc').checked = userData['HomeLocation']
-  document.getElementById('getLoc').checked = userData['Location']
+  console.log(userData)
+  document.getElementById('homeLoc2').checked = userData['HomeLocation']
+  document.getElementById('getLoc2').checked = userData['Location']
 }
 
 
+function saveSideNav(){
+  console.log("hello")
+  let val = document.getElementById('edits').value
+  let rads = document.getElementsByClassName('switches')
 
+
+  userInfo = document.getElementsByClassName("info")
+  console.log(userInfo)
+
+  
+  userInfo[0].innerHTML ="Username: "+val
+
+
+  if(!rads[0].checked){
+    userInfo[2].innerHTML ="Home location: Not Set"
+  }else{
+    userInfo[2].innerHTML ="Home location: Set"
+  }
+
+  if(!rads[1].checked){
+    userInfo[3].innerHTML ="Location: Inactive"
+  }else{
+    userInfo[3].innerHTML ="Location: Active"
+  }
+
+  database.ref('users/'+uid).update({
+    HomeLocation:rads[0].checked,
+    Location:rads[1].checked,
+    userName:val
+  })
+  userData['HomeLocation']=rads[0].checked
+  userData['Location']=rads[1].checked
+  userData['userName']=val
+
+  let hide = document.getElementsByClassName('change')
+  for(i=0;i<hide.length;i++){
+    hide[i].innerHTML=""
+  }
+
+
+
+}
+
+function cancelChanges(){
+  sidenavInfo.innerHTML=og;
+}
