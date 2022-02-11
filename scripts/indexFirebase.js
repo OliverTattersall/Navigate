@@ -47,7 +47,7 @@ firebase.auth().onAuthStateChanged((user) => {
       uid = user.uid;
       database.ref('users/'+uid).once('value',(v)=>{
         d = v.val()
-        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
+        vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake'], d['Home']]
         userData = d;
 
         loadInfo(vals)
@@ -66,7 +66,7 @@ firebase.auth().onAuthStateChanged((user) => {
       database.ref('users/test').once('value',(v)=>{
           d = v.val()
           console.log(d)
-          vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake']]
+          vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake'], d['Home']]
           loadInfo(vals)
           userData = d;
           updateMap()
@@ -84,7 +84,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
 
 function loadInfo(data){
-  // console.log(data)
+  console.log(data)
   userInfo = document.getElementsByClassName("info")
 
   
@@ -95,6 +95,7 @@ function loadInfo(data){
     userInfo[2].innerHTML +=" Not Set"
   }else{
     userInfo[2].innerHTML +=" Set"
+    L.marker(data[5], {icon:houseIcon}).addTo(mymap)
   }
 
   if(!data[3]){
@@ -134,6 +135,7 @@ function addToDatabase(path, data){
     console.error(error);
   });
 }
+
 
 
 //read from database --- fix this
@@ -274,7 +276,11 @@ function saveSideNav(){
     hide[i].innerHTML=""
   }
 
-
+  if(userData['Home']==null&&userData['HomeLocation']==true){
+    home=true;
+    alert("click on map to set home location")
+    closeSideOnModal()
+  }
 
 }
 

@@ -1,11 +1,12 @@
-
+//define global variables 
 var rock=false;
 var poly=false;
 var star=false;
+var home=false;
 var rocks=[];
 var polygons=[];
 var stars = [];
-
+var bounds;
 
 var mymap = L.map('map',{zoomControl:true})
 mymap.setView([44.552923140196725, -78.15305721293893], 13);
@@ -63,6 +64,10 @@ var starIcon = L.icon({
     iconUrl:'images/star.png',
     iconAnchor: [15,42]
 })
+var houseIcon=L.icon({
+    iconUrl:'images/house.png',
+    iconAnchor: [8,20]
+})
 
 
 // onclick
@@ -74,45 +79,55 @@ mymap.addEventListener('click', (ev)=>{
     lat = ev.latlng.lat;
     lng = ev.latlng.lng;
 
-    //gets a popup info
-    if(!poly&&!rock&&rocks.length!=0 && !star){
+    //Opens a popup
+    // makes sure the user does not want to 
+    if(!poly&&!rock&&rocks.length!=0 && !star&&!home){
+        // get map zoom
         zoom = mymap._zoom-12
 
+        //define variables
         d = 0.005
         loc = -1
-        // console.log(rocks)
+
+        //loops through rocks and check if distance from rock to mouseclick is smaller than the current distance
         for(i=0;i<rocks.length;i++){
             var temp = rocks[i]._latlng
             var d2 = Math.sqrt((temp['lat']-lat)**2+(temp['lng']-lng)**2)
             d2 = d2*(2**zoom)
-            // console.log(rocks[i]._latlng)
+
             if(d2<d){
                 loc=i
                 d=d2
             }
         }
+        //if the pointer has changed, open the popup at that rock
         if(loc!=-1){
             rocks[loc].openPopup();
         }
-        // console.log(d)
+
         
     }
 
     // adds a rock
     if(rock){
-        description = prompt("Add description to rock if need(can leave blank)")
-        // console.log(description)
-        if(description!=null){
-            rocks.push(L.marker([lat, lng], {icon:rockIcon}).addTo(mymap))
-            if(description!=""){
-                rocks[rocks.length-1].bindPopup(description)
+        if(lat>bounds[0][0] || lat<bounds[1][0]||lng>bounds[0][1]||lng<bounds[1][1]){
+            alert("not within lake, change lake location by dropdown")
+        }else{
+            description = prompt("Add description to rock if need(can leave blank)")
+            // console.log(description)
+            if(description!=null){
+                rocks.push(L.marker([lat, lng], {icon:rockIcon}).addTo(mymap))
+                if(description!=""){
+                    rocks[rocks.length-1].bindPopup(description)
+                }
+                let lake = document.getElementById("lakes").value
+                let temppath = "lakes/"+lake+"/Rocks"
+                // console.log(temppath)
+                var info = [lat, lng, description]
+                addToDatabase(temppath, info)
             }
-            let lake = document.getElementById("lakes").value
-            let temppath = "lakes/"+lake+"/Rocks"
-            // console.log(temppath)
-            var info = [lat, lng, description]
-            addToDatabase(temppath, info)
         }
+
 
 
       
@@ -147,6 +162,12 @@ mymap.addEventListener('click', (ev)=>{
             }
             
         star = false;
+    }else if(home){
+        L.marker([lat,lng], {icon:houseIcon}).addTo(mymap);
+        database.ref('users/'+uid).update({
+            Home:[lat, lng]
+        })
+        home=false;
     }
 
     // rocks[0]["_icon"] = "<img src='images/marker-icon copy.png'>"
@@ -207,9 +228,11 @@ function loadRocks(){
     // let lake = document.getElementById("lakes").value
     // console.log(dropDown)
     x = getFromDatabase("/lakes/"+lake+"/")
+    
     // console.log(x)
     x.then((e)=>{
-        console.log(e)
+        // console.log(e)
+        bounds=e['Bounds']
         keys1 = []
         keys2 = []
         if(e['Rocks']!=null){
@@ -257,6 +280,12 @@ function loadStars(data){
 
 //updates map to different lakes
 function changeMapView(){
+    for(i=0;i<rocks.length;i++){
+        rocks[i].remove()
+    }
+    for(i=0;i<polygons.length;i++){
+        polygons[i].remove()
+    }
     let selectVal = document.getElementById('lakes').value;
     if(selectVal!=''){
         console.log(selectVal)
