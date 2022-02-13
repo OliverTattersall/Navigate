@@ -16,8 +16,10 @@ const config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 
-// var lakes = ["Stony Lake", "Lake Muskoka", "Lake of Bays", "Lake Chandos"]
 
+var users=[]
+var userpairs=[]
+var homeLocs
 
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
@@ -38,10 +40,10 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
 var userData = [];
 var test = [];
 firebase.auth().onAuthStateChanged((user) => {
-  console.log("hello")
+  // console.log("hello")
   if (user) {
-      console.log("in")
-      console.log(user.uid)
+      // console.log("in")
+      // console.log(user.uid)
       // User is signed in, see docs for a list of available properties
 
       uid = user.uid;
@@ -54,26 +56,48 @@ firebase.auth().onAuthStateChanged((user) => {
         updateMap()
 
         loadStars(d["FavLocs"])
-      } )
-
+      } ).then(()=>{
+        database.ref('users/userNames').once('value', (v)=>{
+          users = new Set(Object.values(v.val()))
+          userpairs=v.val()
+        })
+      })
+      database.ref('users/homeLocs').once('value',(v)=>{
+        homeLocs=v.val()
+      }).then(()=>{
+        loadFriends(userData['Friends'])
+      })
       
       
       
       // ...
   } else {
       uid = 'test'
-      console.log("no")
+      // console.log("no")
       database.ref('users/test').once('value',(v)=>{
           d = v.val()
-          console.log(d)
+          // console.log(d)
           vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake'], d['Home']]
-          loadInfo(vals)
+          
           userData = d;
+          loadInfo(vals)
           updateMap()
           
           loadStars(d["FavLocs"])
           
-      } )
+          
+      }).then(()=>{
+        database.ref('users/userNames').once('value', (v)=>{
+          users = new Set(Object.values(v.val()))
+          userpairs=v.val()
+        })
+      })
+
+      database.ref('users/homeLocs').once('value',(v)=>{
+        homeLocs=v.val()
+      }).then(()=>{
+        loadFriends(userData['Friends'])
+      })
       
       // user is not signed in redirect them to login page
       // window.open("login.html", "_parent")
@@ -84,18 +108,24 @@ firebase.auth().onAuthStateChanged((user) => {
 
 
 function loadInfo(data){
-  console.log(data)
+  if(data[4]==null){
+    alert("select which lake you would like to look at using the dropdown")
+  }
+  if(data[5]!=null){
+    L.marker(data[5], {icon:houseIcon}).addTo(mymap)
+  }
+  // console.log(data)
   userInfo = document.getElementsByClassName("info")
 
   
   userInfo[0].innerHTML +=" "+data[0]
   userInfo[1].innerHTML +=" "+data[1]
-  console.log(data[2])
+  // console.log(data[2])
   if(!data[2]){
-    userInfo[2].innerHTML +=" Not Set"
+    userInfo[2].innerHTML +=" No"
   }else{
-    userInfo[2].innerHTML +=" Set"
-    L.marker(data[5], {icon:houseIcon}).addTo(mymap)
+    userInfo[2].innerHTML +=" Yes"
+    
   }
 
   if(!data[3]){
@@ -110,7 +140,7 @@ function loadInfo(data){
   var selectOptions = selectElement.options
 
 
-  console.log(lakes.length)
+
   for(i=0;i<selectOptions.length;i++){
     if(selectOptions[i].value ==data[4]){
       document.getElementById('lakes').selectedIndex = i;
@@ -138,7 +168,7 @@ function addToDatabase(path, data){
 
 
 
-//read from database --- fix this
+// read from database 
 function getFromDatabase(path){
   var temp = []
   return database.ref(path).once('value').then((e)=>{
@@ -156,7 +186,7 @@ function deleteFromDatabase(path){
 
 
 function logOut(){
-  console.log("hello")
+  // console.log("hello")
   firebase.auth().signOut().then(() => {
     // Sign-out successful.
   }).catch((error) => {
@@ -165,7 +195,7 @@ function logOut(){
 }
 
 
-var sidenavInfo;
+
 
 Array.prototype.insert = function ( index, item ) {
   this.splice( index, 0, item );
@@ -190,7 +220,7 @@ String.prototype.format = String.prototype.format || function () {
 };
 
 var og;
-
+var sidenavInfo;
 
 function editInfo(){
 
@@ -202,8 +232,8 @@ function editInfo(){
   let temp = '<li><a class="subheader" style="width:50%; margin-right: 0%;">User Info</a><button onclick="editInfo()">Edit</button></li>, \
   <li><p href="#name"><span class="black-text name sub info">Username: </span></p></li>, \
   <li><p href="#email"><span class="black-text email sub info">email: test@test.com</span></p></li>, \
-  <li><p href="#email"><span id="home" class="black-text email sub info">Home location: </span></p></li>, \
-  <li><p href="#email"><span id="loc" class="black-text email sub info">Location: </span></p></li>'.split(",")
+  <li><p href="#email"><span id="home" class="black-text email sub info">Show Home Location to Friends:</span></p></li>, \
+  <li><p href="#email"><span id="loc" class="black-text email sub info">Current Location:</span></p></li>'.split(",")
   // console.log(temp)
   let inp = '<div class="input-field col s5 offset-s1  change">\
   <input value="'+userData['UserName']+'" id="edits" type="text" class="validate">\
@@ -214,7 +244,7 @@ function editInfo(){
     <span class="lever"></span>\
     On\
   </label></div>'
-  console.log(rad)
+  // console.log(rad)
 
   let rad2 = '  <div class="switch change" id="getLoc"><label>\
   Off\
@@ -231,59 +261,106 @@ function editInfo(){
     end+=temp[i]
   }
   sidenavInfo.innerHTML=end;
-  console.log(userData)
+  // console.log(userData)
   document.getElementById('homeLoc2').checked = userData['HomeLocation']
   document.getElementById('getLoc2').checked = userData['Location']
 }
 
 
 function saveSideNav(){
-  console.log("hello")
+
   let val = document.getElementById('edits').value
   let rads = document.getElementsByClassName('switches')
 
 
   userInfo = document.getElementsByClassName("info")
-  console.log(userInfo)
+  // console.log(userInfo)
 
-  
+  if(users.has(val)&&val!=userData['UserName']){
+    alert("username taken")
+    return
+  }
+
+  //updates sidenav
   userInfo[0].innerHTML ="Username: "+val
 
-
   if(!rads[0].checked){
-    userInfo[2].innerHTML ="Home location: Not Set"
+    userInfo[2].innerHTML ="Show Home Location to Friends: No"
   }else{
-    userInfo[2].innerHTML ="Home location: Set"
+    userInfo[2].innerHTML ="Show Home Location to Friends: Yes"
   }
 
   if(!rads[1].checked){
-    userInfo[3].innerHTML ="Location: Inactive"
+    userInfo[3].innerHTML ="Current Location: Inactive"
   }else{
-    userInfo[3].innerHTML ="Location: Active"
+    userInfo[3].innerHTML ="Current Location: Active"
   }
 
   database.ref('users/'+uid).update({
     HomeLocation:rads[0].checked,
     Location:rads[1].checked,
-    userName:val
+    UserName:val
   })
+
+  //updates username database
+  if(val!=userData['UserName']){
+    for(i=0;i<Object.values(userpairs).length;i++){
+      if(userData['UserName']==Object.values(userpairs)[i]){
+        let key = Object.keys(userpairs)[i]
+        database.ref('users/userNames/'+key).remove()
+        users.delete(userData['UserName'])
+        let newkey = database.ref('users/userNames/').push(val).key;
+        users.add(val)
+        database.ref('users/friendsCanView/'+userData['UserName']).remove()
+        database.ref('users/friendsCanView/').update({
+          [val]:rads[0].checked
+        })
+        delete userpairs[key]
+        userpairs[newkey]=val
+        database.ref('users/homeLocs/'+userData['UserName']).remove()
+  
+      }
+    }
+  }
+
+  database.ref('users/friendsCanView/').update({
+    [val]:rads[0].checked
+  })
+  if(rads[0].checked){
+    database.ref('users/homeLocs/').update({
+      [val]:userData['Home']
+    })
+  }else{
+    database.ref('users/homeLocs/'+val).remove()
+  }
   userData['HomeLocation']=rads[0].checked
   userData['Location']=rads[1].checked
-  userData['userName']=val
+  userData['UserName']=val
 
   let hide = document.getElementsByClassName('change')
   for(i=0;i<hide.length;i++){
     hide[i].innerHTML=""
   }
 
-  if(userData['Home']==null&&userData['HomeLocation']==true){
-    home=true;
-    alert("click on map to set home location")
-    closeSideOnModal()
-  }
+
 
 }
 
 function cancelChanges(){
   sidenavInfo.innerHTML=og;
+}
+
+
+function addFriend(){
+  console.log("hello")
+  friendName = prompt("enter friends Username")
+  if(friendName!=null){
+    if(users.has(friendName)){
+      database.ref('users/'+uid+'/Friends/').push(friendName).then(()=>{
+        alert("success")
+      })
+    }else{
+      alert('User does not exist')
+    }
+  }
 }

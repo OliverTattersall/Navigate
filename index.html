@@ -38,14 +38,14 @@
               <li><a class="subheader" style="width:50%; margin-right: 0%;">User Info</a><button onclick="editInfo()">Edit</button></li>
               <li><p href=""><span class="black-text name sub info">Username:</span></p></li>
               <li><p href=""><span class="black-text email sub info">email:</span></p></li>
-              <li><p href=""><span id="home" class="black-text email sub info">Home location:</span></p></li>
-              <li><p href=""><span id="loc" class="black-text email sub info">Location:</span></p></li>
+              <li><p href=""><span id="home" class="black-text email sub info">Show Home Location to Friends:</span></p></li>
+              <li><p href=""><span id="loc" class="black-text email sub info">Current Location:</span></p></li>
             </div>
 
             <li><div class="divider"></div></li>
 
-            <li><a class='modal-trigger' href="#friendsModal">Friends</a></li>
-            <li><a class='modal-trigger' href="#favLocsModal" onclick="loadModalContent('LocContent', stars)">Favourite Places</a></li>
+            <li><a class='modal-trigger' href="#friendsModal" onclick="loadModalContent('friendsContent', friends, 'Friends', 'addFriend()','Add a friend')">Friends</a></li>
+            <li><a class='modal-trigger' href="#favLocsModal" onclick="loadModalContent('LocContent', stars, 'Favourite Places', 'star=true;', 'Add a favourite locations')">Favourite Places</a></li>
             <li><div class="divider"></div></li>
 
             <li><a class="waves-effect" href="#!" onclick="rock=true;closeSideOnModal()">Add Rock</a></li>
@@ -80,7 +80,7 @@
         
         <!-- modals -->
         <div id="friendsModal" class="mdls modal modal-fixed-footer col l3 m1 s1">
-            <div class="modal-content">
+            <div class="modal-content" id="friendsContent">
                 
               <h4>Friends</h4>
               <a href="#!" class="waves-effect waves-green teal lighten-4 black-text modalList" id="addFriend">Add a friend</a>

@@ -15,6 +15,13 @@ firebase.initializeApp(config);
 const database = firebase.database();
 var userContent;
 
+var users=[];
+database.ref("users/userNames/").once('value').then((e)=>{
+
+    users = Object.values(e.val())
+    users = new Set(users)
+})
+
 firebase.auth().onAuthStateChanged((user) => {
     console.log("hello")
     if (user) {
@@ -40,15 +47,34 @@ firebase.auth().onAuthStateChanged((user) => {
 
 function setUp(){
     let val = document.getElementById('locSwitch').checked
+    let home = document.getElementById('HomeSwitch').checked
     let userName = document.getElementById('Uname').value;
+
     console.log(val, userName)
-    if(userName!=''){
-        console.log(userContent.uid, userContent.email)
-        database.ref("/users/"+userContent.uid).set({
-            email:userContent.email,
-            UserName: userName,
-            Location:val
-        })
-        window.open("index.html", "_parent")
+    if(userName!=''&&userName!="friendsCanView"&&userName!="userNames"){
+        if(!users.has(userName)){
+            console.log(userContent.uid, userContent.email)
+            alert("wait for data to be processed")
+            database.ref("/users/"+userContent.uid).set({
+                email:userContent.email,
+                UserName: userName,
+                Location:val,
+                HomeLocation:home
+            }).then(()=>{
+                database.ref("/users/userNames").push(userName).then(()=>{
+                    database.ref("users/friendsCanView/").update({
+                        [userName]:home
+                    }).then(()=>{
+                        window.open("index.html", "_parent")
+                    })
+                })
+                
+            })
+        }else{
+            alert('User Name is taken')
+        }
+
+
+        
     }
 }

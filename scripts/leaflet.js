@@ -2,11 +2,13 @@
 var rock=false;
 var poly=false;
 var star=false;
-var home=false;
 var rocks=[];
 var polygons=[];
 var stars = [];
 var bounds;
+var points = [];
+var friends=[];
+var home =false;
 
 var mymap = L.map('map',{zoomControl:true})
 mymap.setView([44.552923140196725, -78.15305721293893], 13);
@@ -26,7 +28,7 @@ function updateMap(){
 }
 
 function getLoc(){
-    console.log("hello")
+    // console.log("hello")
     if(userData['Location']){
         navigator.geolocation.getCurrentPosition((e)=>{
             mymap.setView([e.coords.latitude, e.coords.longitude], 12)
@@ -57,7 +59,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 var rockIcon=L.icon({
     iconUrl:'images/rock.png',
-    iconAnchor: [15,42]
+    iconAnchor: [15,32]
 
 })
 var starIcon = L.icon({
@@ -69,13 +71,16 @@ var houseIcon=L.icon({
     iconAnchor: [8,20]
 })
 
+var friendIcon=L.icon({
+    iconUrl:'images/friends.png',
+    iconAnchor:[15,20]
+})
 
 // onclick
 var lat, lng;
-points = []
 mymap.addEventListener('click', (ev)=>{
-    console.log(star)
-    // console.log(mymap.zoom)
+    
+
     lat = ev.latlng.lat;
     lng = ev.latlng.lng;
 
@@ -120,11 +125,12 @@ mymap.addEventListener('click', (ev)=>{
                 if(description!=""){
                     rocks[rocks.length-1].bindPopup(description)
                 }
+                
                 let lake = document.getElementById("lakes").value
                 let temppath = "lakes/"+lake+"/Rocks"
                 // console.log(temppath)
                 var info = [lat, lng, description]
-                addToDatabase(temppath, info)
+                base(temppath, info)
             }
         }
 
@@ -167,6 +173,11 @@ mymap.addEventListener('click', (ev)=>{
         database.ref('users/'+uid).update({
             Home:[lat, lng]
         })
+        if(userData['HomeLocation']){
+            database.ref('users/homeLocs/').update({
+                [userData['UserName']] : userData=['Home']
+            })
+        }
         home=false;
     }
 
@@ -204,11 +215,11 @@ document.addEventListener('keyup', (ev)=>{
             if(rocks[i]._popup!=null){
                 if(rocks[i]._popup.isOpen()){
                     x = confirm("Are you sure you want to delete the rock")
-                    console.log(x)
+                    // console.log(x)
                     let lake = document.getElementById('lakes').value
                     if(x){
                         rocks[i].remove()
-                        console.log(rocks[i].key)
+                        // console.log(rocks[i].key)
                         deleteFromDatabase('lakes/'+lake+'/Rocks/'+rocks[i].key)
                     }
                 }
@@ -221,7 +232,7 @@ document.addEventListener('keyup', (ev)=>{
 })
 
 
-//load rocks and danger zones and favourite locations
+//load rocks and danger zones
 function loadRocks(){
     let lake = document.getElementById("lakes").value
     // console.log(dropDown)
@@ -269,14 +280,30 @@ function loadStars(data){
     if(data==null){
         return 
     }
-    console.log(data)
+    // console.log(data)
     let keys = Object.keys(data)
     for(i=0;i<keys.length;i++){
-        console.log(data[keys[i]])
+        // console.log(data[keys[i]])
         stars.push(L.marker(data[keys[i]].slice(0,2), {icon:starIcon}).addTo(mymap).bindPopup(data[keys[i]][2]))
+        stars[i].key = keys[i]
     }
 }
 
+
+function loadFriends(data){
+    console.log(data)
+    if(data==null){
+        return
+    }
+    let vals = Object.values(data)
+    for(i=0;i<vals.length;i++){
+        
+        if(homeLocs[vals[i]]!=null){
+
+            friends.push(L.marker(homeLocs[vals[i]], {icon:friendIcon}).addTo(mymap).bindPopup(vals[i]))
+        }
+    }
+}
 
 //updates map to different lakes
 function changeMapView(){
@@ -288,10 +315,10 @@ function changeMapView(){
     }
     let selectVal = document.getElementById('lakes').value;
     if(selectVal!=''){
-        console.log(selectVal)
+        // console.log(selectVal)
         let tempData = getFromDatabase("lakes/"+selectVal+"/Bounds/")
         tempData.then((val)=>{
-            console.log(val)
+            // console.log(val)
             let x = (val[0][0]+val[1][0])/2
             let y = (val[0][1]+val[1][1])/2
             mymap.setView([x, y], 12);
@@ -299,7 +326,21 @@ function changeMapView(){
         rocks = []
         loadRocks()
     }
+    if(userData['Home']==null){
+
+            alert("please click on map to set home location")
+            home=true
+          
+    }
     
+}
+
+
+
+function snapToLoc(data){
+    // console.log(data)
+    mymap.setView(data, 15);
+
 }
 
 
