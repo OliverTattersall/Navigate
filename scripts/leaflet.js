@@ -9,6 +9,7 @@ var bounds;
 var points = [];
 var friends=[];
 var home =false;
+var loc;
 
 var mymap = L.map('map',{zoomControl:true})
 mymap.setView([44.552923140196725, -78.15305721293893], 13);
@@ -32,6 +33,7 @@ function getLoc(){
     if(userData['Location']){
         navigator.geolocation.getCurrentPosition((e)=>{
             mymap.setView([e.coords.latitude, e.coords.longitude], 12)
+            loc = L.marker([e.coords.latitude, e.coords.longitude], {icon:markerIcon}).addTo(mymap)
         })
     }
 }
@@ -73,6 +75,11 @@ var houseIcon=L.icon({
 
 var friendIcon=L.icon({
     iconUrl:'images/friends.png',
+    iconAnchor:[15,20]
+})
+
+var markerIcon=L.icon({
+    iconUrl:'images/marker.png', 
     iconAnchor:[15,20]
 })
 
@@ -316,6 +323,12 @@ function changeMapView(){
     let selectVal = document.getElementById('lakes').value;
     if(selectVal!=''){
         // console.log(selectVal)
+        if(userData['lake']==null){
+            userData['lake'] == selectVal
+            database.ref("users/"+uid+"/").update({
+                lake:selectVal
+            })
+        }
         let tempData = getFromDatabase("lakes/"+selectVal+"/Bounds/")
         tempData.then((val)=>{
             // console.log(val)
@@ -326,7 +339,7 @@ function changeMapView(){
         rocks = []
         loadRocks()
     }
-    if(userData['Home']==null){
+    if(userData['Home']==null && selectVal!=''){
 
             alert("please click on map to set home location")
             home=true
@@ -338,7 +351,7 @@ function changeMapView(){
 
 
 function snapToLoc(data){
-    // console.log(data)
+
     mymap.setView(data, 15);
 
 }

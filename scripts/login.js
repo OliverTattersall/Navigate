@@ -18,7 +18,7 @@ const config = {
 
 
 
-
+// function that validates email. 
 function emailValid(email){
     alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
     spec = "0123456789-~!$%^&*_=+}{'?.".split("")
@@ -35,26 +35,27 @@ function emailValid(email){
     // console.log(email)
     for(i=0;i<email[0].length;i++){
         if(allowb.has(email[0][i])===false){
-            console.log("a", email[0][i])
+            // console.log("a", email[0][i])
             return false
         }
     }
     //checks for allowed characters for second part
     for(i=0;i<email[1].length;i++){
         if(allowa.has(email[1][i])==false){
-            console.log("b", email[1][i])
+            // console.log("b", email[1][i])
             return false
         }
     }
     //checks if there at least 2 digits before .
     if(!(alpha2.has(email[1][email[1].length-1]) && alpha2.has(email[1][email[1].length-2]))){
-        console.log("c", email[1][-1], email[1][-2])
+        // console.log("c", email[1][-1], email[1][-2])
         return false
     }
 
     return true
 }
-// emailValid("kajshdajkh@asdjkhk")
+
+
 
 
 
