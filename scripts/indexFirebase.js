@@ -53,7 +53,7 @@ firebase.auth().onAuthStateChanged((user) => {
         userData = d;
 
         loadInfo(vals)
-        updateMap()
+        getLoc()
 
         loadStars(d["FavLocs"])
       } ).then(()=>{
@@ -72,35 +72,35 @@ firebase.auth().onAuthStateChanged((user) => {
       
       // ...
   } else {
-      uid = 'test'
-      // console.log("no")
-      database.ref('users/test').once('value',(v)=>{
-          d = v.val()
-          // console.log(d)
-          vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake'], d['Home']]
+      // uid = 'test'
+      // // console.log("no")
+      // database.ref('users/test').once('value',(v)=>{
+      //     d = v.val()
+      //     // console.log(d)
+      //     vals = [d['UserName'], d['email'], d['HomeLocation'], d['Location'], d['lake'], d['Home']]
           
-          userData = d;
-          loadInfo(vals)
-          updateMap()
+      //     userData = d;
+      //     loadInfo(vals)
+      //     updateMap()
           
-          loadStars(d["FavLocs"])
+      //     loadStars(d["FavLocs"])
           
           
-      }).then(()=>{
-        database.ref('users/userNames').once('value', (v)=>{
-          users = new Set(Object.values(v.val()))
-          userpairs=v.val()
-        })
-      })
+      // }).then(()=>{
+      //   database.ref('users/userNames').once('value', (v)=>{
+      //     users = new Set(Object.values(v.val()))
+      //     userpairs=v.val()
+      //   })
+      // })
 
-      database.ref('users/homeLocs').once('value',(v)=>{
-        homeLocs=v.val()
-      }).then(()=>{
-        loadFriends(userData['Friends'])
-      })
+      // database.ref('users/homeLocs').once('value',(v)=>{
+      //   homeLocs=v.val()
+      // }).then(()=>{
+      //   loadFriends(userData['Friends'])
+      // })
       
       // user is not signed in redirect them to login page
-      // window.open("login.html", "_parent")
+      window.open("login.html", "_parent")
       // User is signed out
       // ...
   }
@@ -357,7 +357,7 @@ function addFriend(){
   if(friendName!=null){
     if(users.has(friendName)){
       database.ref('users/'+uid+'/Friends/').push(friendName).then(()=>{
-        alert("success")
+        alert("success, refresh page")
       })
     }else{
       alert('User does not exist')

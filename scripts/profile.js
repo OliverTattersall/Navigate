@@ -38,7 +38,7 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         
         // user is not signed in redirect them to login page
-        // window.open("login.html", "_parent")
+        window.open("login.html", "_parent")
         // User is signed out
         // ...
     }

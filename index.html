@@ -69,10 +69,22 @@
             </div>
         </div>
         <div class="row">
-            <div id="map" class="col l8">
+            <div id="map" class="col offset-l3 l8 m8 s8">
 
             </div>
-            <button style="background: url(images/location.jpg); width:27px; height:28px" onclick="getLoc()"></button>
+            <button style="background: url(images/location.jpg); width:27px; height:28px; " onclick="getLoc()"></button>
+            <br>
+            <div class="col l1 m2 s4">
+              
+
+              
+              <h5>Legend</h3>
+              <img src="images/friends.png" alt="" style="float: left;"><p class="legendText" style="margin:0px;">- Friends</p><br>
+              <img src="images/rock.png" alt="" style="float: left;"><p class="legendText" style="margin:0px;">- Rock</p><br>
+              <img src="images/house.png" alt="" style="float: left;"><p class="legendText" style="margin:0px;">- House</p><br>
+              <img src="images/star.png" alt="" style="float: left;"><p class="legendText" style="margin:0px;">- Favourite Locations</p>
+            </div>
+            
         </div>
 
 
@@ -87,7 +99,7 @@
 
             </div>
             <div class="modal-footer">
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+              <a href="#!" class="waves-effect waves-green btn-flat" onclick="delfriend=true;alert('click one to delete');">Delete Friends</a><a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
 
@@ -100,7 +112,7 @@
               
             </div>
             <div class="modal-footer">
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+              <a href="#!" class="waves-effect waves-green btn-flat" onclick = "delLoc=true;alert('click one to delete');">Delete Favourite Locations</a><a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
 

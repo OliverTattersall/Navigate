@@ -10,23 +10,14 @@ var points = [];
 var friends=[];
 var home =false;
 var loc;
+var delfriend=false;
+var delLoc=false;
 
 var mymap = L.map('map',{zoomControl:true})
 mymap.setView([44.552923140196725, -78.15305721293893], 13);
 
 
-// updates map to their location if allowed
-function updateMap(){
-
-    if(userData['Location']){
-        navigator.geolocation.getCurrentPosition((e)=>{
-            mymap.setView([e.coords.latitude, e.coords.longitude], 13)
-        }) 
-        // navigator.geolocation.getCurrentPosition((e)=>{
-        //     mymap.setView([e.coords.latitude, e.coords.longitude], 12)
-        // }) 
-    }
-}
+// // updates map to their location if allowed
 
 function getLoc(){
     // console.log("hello")
@@ -137,7 +128,7 @@ mymap.addEventListener('click', (ev)=>{
                 let temppath = "lakes/"+lake+"/Rocks"
                 // console.log(temppath)
                 var info = [lat, lng, description]
-                base(temppath, info)
+                addToDatabase(temppath, info)
             }
         }
 
@@ -146,7 +137,7 @@ mymap.addEventListener('click', (ev)=>{
       
     //   console.log(lat, lng)
     //   console.log(rocks[0])
-      rock=false
+        rock=false
 
 
     // adds points to the polygon
@@ -180,11 +171,13 @@ mymap.addEventListener('click', (ev)=>{
         database.ref('users/'+uid).update({
             Home:[lat, lng]
         })
+        userData['Home']=[lat,lng]
         if(userData['HomeLocation']){
             database.ref('users/homeLocs/').update({
-                [userData['UserName']] : userData=['Home']
+                [userData['UserName']] : userData['Home']
             })
         }
+
         home=false;
     }
 
@@ -298,16 +291,18 @@ function loadStars(data){
 
 
 function loadFriends(data){
-    console.log(data)
+    // console.log(data)
     if(data==null){
         return
     }
     let vals = Object.values(data)
+    let keys = Object.keys(data)
     for(i=0;i<vals.length;i++){
         
         if(homeLocs[vals[i]]!=null){
 
             friends.push(L.marker(homeLocs[vals[i]], {icon:friendIcon}).addTo(mymap).bindPopup(vals[i]))
+            friends[i].key = keys[i]
         }
     }
 }
@@ -350,9 +345,22 @@ function changeMapView(){
 
 
 
-function snapToLoc(data){
-
-    mymap.setView(data, 15);
+function snapToLoc(data, id){
+    if(!delfriend && !delLoc){
+        mymap.setView(data, 15);
+    }else{
+        x = confirm("are you sure you want to do this?")
+        console.log(x)
+        if(delfriend && x){
+            deleteFromDatabase("users/"+uid+"/Friends/"+id)
+        }else if(delLoc&& x){
+            deleteFromDatabase("users/"+uid+"/FavLocs/"+id)
+        }
+        // console.log(data, id)
+        alert("refresh page")
+        // del =false
+    }
+    
 
 }
 
