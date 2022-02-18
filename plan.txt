@@ -1,9 +1,0 @@
-Things I want:
-- Button to show friends locations
-- Add markers for rocks
-- Friends List
-
-
-To do:
-1. figure out marker changes
-    - might need to make new marker by own design
